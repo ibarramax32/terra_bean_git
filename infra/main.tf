@@ -35,10 +35,6 @@ resource "aws_elastic_beanstalk_environment" "env" {
   solution_stack_name = "64bit Amazon Linux 2 v5.10.0 running Node.js 18"
   version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
-  timeout {
-    create = "20m"  # Aumenta el tiempo de espera a 20 minutos
-  }
-
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
