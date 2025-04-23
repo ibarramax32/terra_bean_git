@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 resource "random_id" "bucket_suffix" {
@@ -7,7 +7,7 @@ resource "random_id" "bucket_suffix" {
 }
 
 resource "aws_s3_bucket" "beanstalk_bucket" {
-  bucket = "mi-app-node-beanstalk-bucket-${random_id.bucket_suffix.hex}"
+  bucket = "${var.project_name}-beanstalk-bucket-${random_id.bucket_suffix.hex}"
   acl    = "private"
 }
 
@@ -27,18 +27,13 @@ resource "aws_s3_bucket_policy" "beanstalk_bucket_policy" {
 }
 
 resource "aws_elastic_beanstalk_application" "app" {
-  name = "mi-app-node"
+  name = var.project_name
 }
 
 resource "aws_elastic_beanstalk_environment" "env" {
-  name                = "mi-app-node-env"
+  name                = "${var.project_name}-env"
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2 v5.6.1 running Node.js 18"
   tier                = "WebServer"
-  setting {
-    namespace   = "aws:elasticbeanstalk:application:environment"
-    option_name = "ENV_VAR"
-    value       = "value"
-  }
 }
 
