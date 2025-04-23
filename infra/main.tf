@@ -4,7 +4,7 @@ provider "aws" {
 
 # Rol de IAM para Elastic Beanstalk
 resource "aws_iam_role" "beanstalk_ec2_role" {
-  name = "aws-elasticbeanstalk-ec2-role"
+  name = "aws-elasticbeanstalk-ec2-role-new" # Updated to a unique name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -38,7 +38,7 @@ resource "aws_iam_role_policy_attachment" "beanstalk_ec2_s3_policy" {
 
 # Perfil de instancia para las instancias EC2 de Elastic Beanstalk
 resource "aws_iam_instance_profile" "beanstalk_instance_profile" {
-  name = "aws-elasticbeanstalk-ec2-profile"
+  name = "aws-elasticbeanstalk-ec2-profile-new" # Updated to a unique name
   role = aws_iam_role.beanstalk_ec2_role.name
 }
 
