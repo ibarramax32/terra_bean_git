@@ -1,10 +1,25 @@
-resource "aws_s3_bucket" "beanstalk_bucket" {
-  bucket = "mi-app-node-beanstalk-bucket-unique"
+provider "aws" {
+  region = "us-east-1"
 }
 
-resource "aws_s3_bucket_acl" "beanstalk_bucket_acl" {
-  bucket = aws_s3_bucket.beanstalk_bucket.bucket
+resource "aws_s3_bucket" "beanstalk_bucket" {
+  bucket = "mi-app-node-beanstalk-bucket-unique"
   acl    = "private"
+}
+
+resource "aws_s3_bucket_policy" "beanstalk_bucket_policy" {
+  bucket = aws_s3_bucket.beanstalk_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "s3:GetObject"
+        Effect    = "Allow"
+        Resource  = "${aws_s3_bucket.beanstalk_bucket.arn}/*"
+        Principal = "*"
+      }
+    ]
+  })
 }
 
 resource "aws_elastic_beanstalk_application" "app" {
@@ -14,17 +29,11 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "mi-app-node-env"
   application         = aws_elastic_beanstalk_application.app.name
-  solution_stack_name = "64bit Amazon Linux 2 v5.6.1 running Node.js 18"
-
-  setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MinSize"
-    value     = "1"
-  }
-
-  setting {
-    namespace = "aws:autoscaling:asg"
-    name      = "MaxSize"
-    value     = "3"
+  solution_stack      = "64bit Amazon Linux 2 v5.6.1 running Tomcat 9 Corretto 11" # Actualiza con la solución correcta
+  tier                = "WebServer"
+  option_settings {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    option_name = "ENV_VAR"
+    value = "value"
   }
 }
