@@ -10,11 +10,6 @@ resource "aws_s3_bucket" "beanstalk_bucket" {
   bucket = "mi-app-node-beanstalk-bucket-${random_id.bucket_suffix.hex}"
 }
 
-resource "aws_s3_bucket_acl" "beanstalk_bucket_acl" {
-  bucket = aws_s3_bucket.beanstalk_bucket.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket_public_access_block" "beanstalk_bucket_public_access" {
   bucket = aws_s3_bucket.beanstalk_bucket.id
 
@@ -34,7 +29,7 @@ resource "aws_s3_bucket_policy" "beanstalk_bucket_policy" {
         Effect    = "Allow"
         Resource  = "${aws_s3_bucket.beanstalk_bucket.arn}/*"
         Principal = {
-          AWS = "arn:aws:iam::172373721600:root" # Reemplaza con el ARN correcto
+          AWS = "arn:aws:iam::172373721600:role/aws-elasticbeanstalk-ec2-role" # Ajusta al rol correcto
         }
       }
     ]
@@ -51,4 +46,3 @@ resource "aws_elastic_beanstalk_environment" "env" {
   solution_stack_name = "64bit Amazon Linux 2023 v5.6.1 running Tomcat 9 Corretto 11"
   tier                = "WebServer"
 }
-
