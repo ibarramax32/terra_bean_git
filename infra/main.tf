@@ -4,7 +4,6 @@ provider "aws" {
 
 resource "aws_s3_bucket" "beanstalk_bucket" {
   bucket = "mi-app-node-beanstalk-bucket-unique"
-  acl    = "private"
 }
 
 resource "aws_s3_bucket_policy" "beanstalk_bucket_policy" {
@@ -27,13 +26,15 @@ resource "aws_elastic_beanstalk_application" "app" {
 }
 
 resource "aws_elastic_beanstalk_environment" "env" {
-  name                = "mi-app-node-env"
-  application         = aws_elastic_beanstalk_application.app.name
-  solution_stack      = "64bit Amazon Linux 2 v5.6.1 running Tomcat 9 Corretto 11" # Actualiza con la solución correcta
-  tier                = "WebServer"
-  option_settings {
+  name        = "mi-app-node-env"
+  application = aws_elastic_beanstalk_application.app.name
+  platform    = "64bit Amazon Linux 2023 v5.6.1 running Tomcat 9 Corretto 11" # Actualiza con la solución correcta
+  tier        = "WebServer"
+
+  setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    option_name = "ENV_VAR"
-    value = "value"
+    name      = "ENV_VAR"
+    value     = "value"
   }
 }
+
