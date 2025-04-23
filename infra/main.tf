@@ -1,16 +1,10 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "aws_s3_bucket" "beanstalk_bucket" {
-  bucket = "mi-app-node-beanstalk-bucket"
-  acl    = "private"
+  bucket = "mi-app-node-beanstalk-bucket-unique" # Cambia el nombre del bucket para hacerlo único
 }
 
-resource "aws_s3_object" "app_zip" {
+resource "aws_s3_bucket_acl" "beanstalk_bucket_acl" {
   bucket = aws_s3_bucket.beanstalk_bucket.bucket
-  key    = "app-version.zip"
-  source = "app/app-version.zip"
+  acl    = "private"
 }
 
 resource "aws_elastic_beanstalk_application" "app" {
@@ -20,13 +14,19 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "mi-app-node-env"
   application         = aws_elastic_beanstalk_application.app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v5.6.1 running Node.js 18"
-  version_label       = aws_s3_object.app_zip.key
-
-  setting {
-    namespace = "aws:elasticbeanstalk:container:nodejs"
-    name      = "NodeCommand"
-    value     = "npm start"
+  solution_stack      = "64bit Amazon Linux 2 v5.6.1 running Node.js 18" # Actualiza con la solución correcta
+  platform            = "Node.js 18 on 64bit Amazon Linux 2"
+  tier {
+    name = "WebServer"
+    type = "Standard"
   }
 }
+
+resource "aws_s3_object" "app_zip" {
+  bucket = aws_s3_bucket.beanstalk_bucket.bucket
+  key    = "app-version.zip"
+  source = "app/app-version.zip"  # Asegúrate de que el archivo existe en la ubicación indicada
+  acl    = "private"
+}
+
 
