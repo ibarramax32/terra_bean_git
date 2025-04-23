@@ -4,7 +4,6 @@ provider "aws" {
 
 resource "aws_s3_bucket" "beanstalk_bucket" {
   bucket = "mi-app-node-beanstalk-bucket"
-  acl    = "private"
 }
 
 resource "aws_s3_object" "app_zip" {
@@ -23,20 +22,20 @@ resource "aws_elastic_beanstalk_environment" "env" {
   application         = aws_elastic_beanstalk_application.app.name
   version_label       = "v1"
   cname_prefix        = "mi-app-node"
-  solution_stack      = "64bit Amazon Linux 2 v3.3.6 running Node.js 18"  # Definir la solución para Node.js
-  s3_bucket           = aws_s3_bucket.beanstalk_bucket.bucket
-  s3_key              = aws_s3_object.app_zip.key
 
-  settings {
+  setting {
     namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = "1"
   }
 
-  settings {
+  setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = "4"
   }
+
+  # No usar `solution_stack`, en lugar de eso usa `platform`
+  platform = "Node.js 18 on 64bit Amazon Linux 2"
 }
 
