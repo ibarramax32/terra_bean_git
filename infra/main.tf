@@ -25,17 +25,15 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "v1-${timestamp()}"
   application = aws_elastic_beanstalk_application.app.name
-  bucket      = aws_s3_bucket.beanstalk_bucket.bucket
+  bucket      = aws_s3_bucket.beanstalk_bucket.id
   key         = aws_s3_bucket_object.app_zip.key
 }
 
 resource "aws_elastic_beanstalk_environment" "env" {
-  name                   = "mi-app-node-env"
-  application            = aws_elastic_beanstalk_application.app.name
-  solution_stack_name    = "64bit Amazon Linux 2023 v4.1.0 running Node.js 18"
-  tier                   = "WebServer"
-  version_label          = aws_elastic_beanstalk_application_version.app_version.name
-  wait_for_ready_timeout = "20m"
+  name                = "mi-app-node-env"
+  application         = aws_elastic_beanstalk_application.app.name
+  solution_stack_name = "64bit Amazon Linux 2 v5.10.0 running Node.js 18"
+  version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
@@ -55,3 +53,4 @@ resource "aws_elastic_beanstalk_environment" "env" {
     value     = "production"
   }
 }
+
