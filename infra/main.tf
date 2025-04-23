@@ -33,9 +33,9 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "mi-app-node-env"
   application         = aws_elastic_beanstalk_application.app.name
-  solution_stack      = "64bit Amazon Linux 2 v5.6.1 running Node.js 18"
+  solution_stack_name = "64bit Amazon Linux 2 v5.6.1 running Node.js 18"
   tier                = "WebServer"
-  option_settings {
+  setting {
     namespace   = "aws:elasticbeanstalk:application:environment"
     option_name = "ENV_VAR"
     value       = "value"
