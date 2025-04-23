@@ -22,6 +22,8 @@ resource "aws_elastic_beanstalk_environment" "env" {
   application         = aws_elastic_beanstalk_application.app.name
   version_label       = "v1"
   cname_prefix        = "mi-app-node"
+  
+  solution_stack_name = "64bit Amazon Linux 2 v3.3.6 running Node.js 18"  # Define la solución aquí
 
   setting {
     namespace = "aws:autoscaling:asg"
@@ -34,8 +36,5 @@ resource "aws_elastic_beanstalk_environment" "env" {
     name      = "MaxSize"
     value     = "4"
   }
-
-  # No usar `solution_stack`, en lugar de eso usa `platform`
-  platform = "Node.js 18 on 64bit Amazon Linux 2"
 }
 
