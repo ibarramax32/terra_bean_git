@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "beanstalk_bucket" {
   bucket = "mi-app-node-beanstalk-${random_id.bucket_id.hex}"
 }
 
-resource "aws_s3_bucket_object" "app_zip" {
+resource "aws_s3_object" "app_zip" {
   bucket = aws_s3_bucket.beanstalk_bucket.id
   key    = "app-version.zip"
   source = "./../app-version.zip"
@@ -26,7 +26,7 @@ resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "v1-${timestamp()}"
   application = aws_elastic_beanstalk_application.app.name
   bucket      = aws_s3_bucket.beanstalk_bucket.id
-  key         = aws_s3_bucket_object.app_zip.key
+  key         = aws_s3_object.app_zip.key
 }
 
 resource "aws_elastic_beanstalk_environment" "env" {
@@ -34,6 +34,10 @@ resource "aws_elastic_beanstalk_environment" "env" {
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2 v5.10.0 running Node.js 18"
   version_label       = aws_elastic_beanstalk_application_version.app_version.name
+
+  timeout {
+    create = "20m"  # Aumenta el tiempo de espera a 20 minutos
+  }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
