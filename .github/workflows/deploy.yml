@@ -1,4 +1,4 @@
-name: Deploy Node.js app to Elastic Beanstalk
+name: Deploy Java app to Elastic Beanstalk
 
 on:
   push:
@@ -12,17 +12,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - name: Setup JDK
+      uses: actions/setup-java@v3
       with:
-        node-version: '18'
+        java-version: '17'  # Adjust to your Java version
+        distribution: 'temurin'
 
-    - name: Install dependencies and zip app
+    - name: Build with Maven
       run: |
         cd app
-        npm install
-        cd ..
-        zip -r app-version.zip app
+        mvn clean package
+        mv target/*.war ../app.war
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -31,7 +31,7 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: "us-east-1"  # Cambiá esto si tu región es otra
+        AWS_REGION: "us-east-1"  # Change this if your region is different
       run: |
         cd infra
         terraform init
