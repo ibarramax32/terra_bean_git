@@ -15,17 +15,16 @@ resource "aws_elastic_beanstalk_environment" "env" {
   name                = "mi-app-node-env"
   application         = aws_elastic_beanstalk_application.app.name
   solution_stack_name = "64bit Amazon Linux 2 v5.6.1 running Node.js 18"
-  
-  option_settings {
+
+  setting {
     namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = "1"
   }
 
-  option_settings {
+  setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = "3"
   }
 }
-
