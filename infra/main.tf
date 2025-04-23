@@ -28,7 +28,7 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name        = "mi-app-node-env"
   application = aws_elastic_beanstalk_application.app.name
-  platform    = "64bit Amazon Linux 2023 v5.6.1 running Tomcat 9 Corretto 11" # Actualiza con la solución correcta
+  solution_stack_name = "64bit Amazon Linux 2023 v5.6.1 running Tomcat 9 Corretto 11" # Actualiza con la solución correcta
   tier        = "WebServer"
 
   setting {
@@ -37,4 +37,5 @@ resource "aws_elastic_beanstalk_environment" "env" {
     value     = "value"
   }
 }
+
 
