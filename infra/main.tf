@@ -51,7 +51,7 @@ resource "aws_elastic_beanstalk_application" "app" {
 resource "aws_elastic_beanstalk_environment" "env" {
   name                = "mi-app-node-env"
   application         = aws_elastic_beanstalk_application.app.name
-  solution_stack_name = "64bit Amazon Linux 2023 v5.6.1 running Tomcat 9 Corretto 11"
+  solution_stack_name = "64bit Amazon Linux 2023 v6.5.1 running Node.js 22" # Updated to Node.js 22
   tier                = "WebServer"
 
   setting {
@@ -60,5 +60,3 @@ resource "aws_elastic_beanstalk_environment" "env" {
     value     = aws_iam_instance_profile.beanstalk_instance_profile.name
   }
 }
-
-# (Incluye aquí tus recursos existentes para el bucket S3, como aws_s3_bucket, aws_s3_bucket_policy, etc.)
